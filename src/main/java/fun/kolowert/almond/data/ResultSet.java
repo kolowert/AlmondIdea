@@ -1,5 +1,6 @@
 package fun.kolowert.almond.data;
 
+import fun.kolowert.almond.serv.Count;
 import fun.kolowert.almond.serv.Serv;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,6 +18,9 @@ public class ResultSet {
 
     private int[] hitRangesMask;
     private List<int[]> hitsOnRanges;
+    private int[] hitsOnRangesSum;
+    private double[] avgHitsOnRanges;
+
     private int zeroesOnHitsOnRanges;
     private double zeroCoefficient;
     private int wholeLinesOnHitsOnRanges;
@@ -56,7 +60,8 @@ public class ResultSet {
     public String reportCoefficients() {
         return "id:" + id + "  zeroCoeff: " + Serv.normDoubleX(zeroCoefficient, 2)
                 + "  wholeLineCoeff: " + Serv.normDoubleX(wholeLinesCoefficient, 2)
-                + "  lines: " + wholeLinesOnHitsOnRanges + "|" + hitsOnRanges.size();
+                + "  lines: " + wholeLinesOnHitsOnRanges + "|" + hitsOnRanges.size()
+                + "  hitsDeviation % " + Serv.normDoubleX(Count.countStandardDeviationPercent(avgHitsOnRanges), 1);
     }
 
     public void recountResultsOnMask(int[] hitRangesMask) {
@@ -66,10 +71,32 @@ public class ResultSet {
 
     private void countResultsOnMask(int[] hitRangesMask) {
         hitsOnRanges = calculateHitsOnRanges(histOrderResultTab, hitRangesMask);
+        hitsOnRangesSum = countHitsOnRangesSum(hitsOnRanges, hitRangesMask);
+        avgHitsOnRanges = countHitsOnRangesCoef(hitsOnRanges, hitsOnRangesSum, hitRangesMask);
+
         zeroesOnHitsOnRanges = countZeroesOnHitsOnRanges(hitsOnRanges);
         zeroCoefficient = 1.0 * zeroesOnHitsOnRanges / hitsOnRanges.size();
         wholeLinesOnHitsOnRanges = countWholeLinesOnHitsOnRanges(hitsOnRanges);
         wholeLinesCoefficient = 1.0 * wholeLinesOnHitsOnRanges / hitsOnRanges.size();
+    }
+
+    private double[] countHitsOnRangesCoef(List<int[]> hitsOnRanges, int[] sumLine, int[] mask) {
+        double[] coef = new double[mask.length];
+        int size = hitsOnRanges.size();
+        for (int i = 0; i < sumLine.length && i < mask.length; i++) {
+            coef[i] = 1.0 * sumLine[i] / size;
+        }
+        return coef;
+    }
+
+    private int[] countHitsOnRangesSum(List<int[]> hitsOnRanges, int[] mask) {
+        int[] sumLine = new int[mask.length];
+        for (int[] line : hitsOnRanges) {
+            for (int i = 0; i < line.length && i < sumLine.length; i++) {
+                sumLine[i] += line[i];
+            }
+        }
+        return sumLine;
     }
 
     private int countWholeLinesOnHitsOnRanges(List<int[]> hitsOnRanges) {

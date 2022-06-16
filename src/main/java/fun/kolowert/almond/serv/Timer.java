@@ -3,6 +3,8 @@ package fun.kolowert.almond.serv;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Timer {
@@ -20,6 +22,14 @@ public class Timer {
         if (displayStartTimeToConsole) {
             System.out.println("Calculation started at: " + dateFormat.format(startedDateTime));
         }
+    }
+
+    public static String dateTimeNow() {
+        return LocalDate.now() + " " + timeNow();
+    }
+
+    public static String timeNow() {
+        return LocalTime.now().toString().substring(0, 8);
     }
 
     public String reportDuration() {

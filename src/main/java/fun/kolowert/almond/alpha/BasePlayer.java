@@ -99,12 +99,12 @@ public class BasePlayer {
                 int order = (int) frequencies[i];
                 int preball = (int) (100 * (frequencies[i] - order) + 0.005);
                 String ball = Serv.normIntX(preball, 2, "0");
-                sb.append(Serv.normIntX(order, 4, " ")).append("(").append(ball).append(")").append(" ");
+                sb.append(Serv.normIntX(order, 5, " ")).append("(").append(ball).append(")").append(" ");
             }
             result.append(sb).append(System.lineSeparator());
         }
         System.out.println("\nFrequencies Tab");
-        System.out.println(Assistant.displayPlainHead(paramSet.gameType, "", "     "));
+        System.out.println(Assistant.displayPlainHead(paramSet.gameType, "", "      "));
         System.out.println(result.substring(0, result.length() - 2));
     }
 
@@ -130,7 +130,7 @@ public class BasePlayer {
     }
 
     private void displayOnRangesReport(ParamSet paramSet, ResultSet resultSet) {
-        reportHitsOnRanges(resultSet.getHitsOnRanges(), resultSet.getHitRangesMask());
+        displayHitsOnRanges(resultSet);
         System.out.println("\nzeroesOnHitsOnRanges: " + resultSet.getZeroesOnHitsOnRanges()
                 + " / " + resultSet.getHitsOnRanges().size()
                 + " >> zero coefficient: # " + Serv.normDoubleX(resultSet.getZeroCoefficient(), 2)
@@ -139,12 +139,12 @@ public class BasePlayer {
                 + "  wholeLinesCoefficient: " + Serv.normDoubleX(resultSet.getWholeLinesCoefficient(), 2));
     }
 
-    private void reportHitsOnRanges(List<int[]> hitsOnRanges, int[] hitsMask) {
+    private void displayHitsOnRanges(ResultSet resultSet) {
         System.out.println("\nHits On Ranges");
-        Assistant.displayRangesHead(hitsMask);
-        Assistant.displayTab(hitsOnRanges);
+        Assistant.displayRangesHead(resultSet.getHitRangesMask());
+        Assistant.displayTab(resultSet.getHitsOnRanges());
         System.out.println("Sum");
-        Assistant.displayHitsOnRangesResume(hitsOnRanges, hitsMask);
+        Assistant.displayHitsOnRangesResume(resultSet);
     }
 
     private int countWorkingThreads(String namePrefix) {
