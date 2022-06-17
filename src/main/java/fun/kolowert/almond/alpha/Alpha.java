@@ -8,17 +8,19 @@ import fun.kolowert.almond.serv.Timer;
 import fun.kolowert.almond.type.GameType;
 import fun.kolowert.almond.type.SortType;
 
+import java.time.LocalTime;
+
 public class Alpha {
 
     private static final GameType GAME_TYPE = GameType.MAXI;
-    private static final SortType SORT_TYPE = SortType.ASCENDING;
+    private static final SortType SORT_TYPE = SortType.DESCENDING;
     private static final int PLAY_SET = 5;
     private static final int HIST_DEEP = 36;
-    private static final int HIST_SHIFT = 0;
-    private static final int HIST_SHIFTS = 4;
-    private static final int REPORT_LIMIT = 12_000;
+    private static final int HIST_SHIFT = 1;
+    private static final int HIST_SHIFTS = 36;
+    private static final int PROCESS_LIMIT = 12_000;
 
-    private static final int WORKING_THREADS_AMOUNT = 4;
+    private static final int WORKING_THREADS_AMOUNT = 3;
 
     private static final String DISPLAY_PREFIX_STUB = "----- |";
 
@@ -31,11 +33,11 @@ public class Alpha {
 
         // Multiply playing
         ParamSet paramSet = new ParamSet(GAME_TYPE, SORT_TYPE, PLAY_SET, HIST_DEEP, HIST_SHIFT, HIST_SHIFTS,
-                REPORT_LIMIT, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
+                PROCESS_LIMIT, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
 
-        multi(true, paramSet);
+        multi(false, paramSet);
 
-        overMulti(false);
+        overMulti(true);
 
         System.out.print("\nalpha finished ~ " + timer.reportExtended());
         Sounder.beep();
@@ -46,14 +48,17 @@ public class Alpha {
         BasePlayer basePlayer = new BasePlayer();
         System.out.println("## OVER MULTI ");
         System.out.println(Combinator.reportCombinationsQuantity(PLAY_SET, GAME_TYPE.getGameSetSize()));
-        int[] histDeeps = new int[] { 8, 12, 18, 24, 36, 48, 60 };
-        int[] reportLimits = new int[] { 1_000, 3_000, 6_000, 9_000, 12_000, 16_000 };
+        int[] histDeeps = new int[] { 9, 12, 18, 24, 36, 48, 60, 90 };
+        int[] processLimits = new int[] { 1_000, 3_000, 6_000, 9_000, 12_000, 16_000, 20_000 };
+        System.out.print("\nCoefficients");
+                System.out.print("\n" + ResultSet.csvCoefficientsHead() + ", |, " + ParamSet.csvHead());
         for (int histDeep : histDeeps) {
-            for (int reportLimit : reportLimits) {
+            for (int processLimit : processLimits) {
                 ParamSet paramSet = new ParamSet(GAME_TYPE, SORT_TYPE, PLAY_SET, histDeep, HIST_SHIFT, HIST_SHIFTS,
-                        reportLimit, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
+                        processLimit, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
                 ResultSet resultSet = basePlayer.playMulti(paramSet, false);
-                System.out.print("\n" + resultSet.reportCoefficients() + " onParams: " + paramSet);
+                System.out.print("\n" + resultSet.csvCoefficients() + ", |, " + paramSet.csvStamp()
+                        + "  >>" + LocalTime.now().toString().substring(0, 8));
             }
         }
     }

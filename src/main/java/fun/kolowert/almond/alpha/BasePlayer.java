@@ -47,7 +47,7 @@ public class BasePlayer {
             // do job
             Thread workingThread = new Thread(
                     new ConcurrentWorker(paramSet.getGameType(), paramSet.getSortType(), paramSet.getPlaySet(),
-                            paramSet.getHistDeep(), indexHistShift, paramSet.getReportLimit(),
+                            paramSet.getHistDeep(), indexHistShift, paramSet.getProcessLimit(),
                             frequenciesTab, histOrderResultTab),"almond" + indexHistShift);
             workingThread.start();
 

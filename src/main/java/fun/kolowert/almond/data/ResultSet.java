@@ -57,6 +57,17 @@ public class ResultSet {
         return result;
     }
 
+    public static String csvCoefficientsHead() {
+        return "id,zeroCoeff,wholeLineCoeff,wholelines,lines,deviation%";
+    }
+
+    public String csvCoefficients() {
+        return "" + id + ", " + Serv.normDoubleX(zeroCoefficient, 2)
+                + ", " + Serv.normDoubleX(wholeLinesCoefficient, 2)
+                + ", " + wholeLinesOnHitsOnRanges + "," + hitsOnRanges.size()
+                + ", " + Serv.normDoubleX(Count.countStandardDeviationPercent(avgHitsOnRanges), 1);
+    }
+
     public String reportCoefficients() {
         return "id:" + id + "  zeroCoeff: " + Serv.normDoubleX(zeroCoefficient, 2)
                 + "  wholeLineCoeff: " + Serv.normDoubleX(wholeLinesCoefficient, 2)

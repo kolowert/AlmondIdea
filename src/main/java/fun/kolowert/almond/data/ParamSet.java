@@ -19,15 +19,24 @@ public class ParamSet {
     public final int histDeep;
     public final int histShift;
     public final int histShifts;
-    public final int reportLimit;
+    public final int processLimit;
     public final int workingThreads;
     public final String displayPrefix;
     public final int[] hitRangesMask;
 
+    public static String csvHead() {
+        return "id,gameType,sortType,playSet,histDeep,histShift,histShifts,processLimit,workingThreads,hitRangesMask";
+    }
+
+    public String csvStamp() {
+        return "" + id + ", " + gameType + ", " +  sortType + ", " + playSet + ", " + histDeep + ", " + histShift + ", "
+                + histShifts + ", " + processLimit + ", " + workingThreads + ", \"" + Arrays.toString(hitRangesMask) + "\"";
+    }
+
     @Override
     public String toString() {
         return "id:" + id + " " + gameType + " " + sortType + " playSet:" + playSet + " histDeep:" + histDeep
-                + " histLines:" + histShift + "/" + histShifts + " reportLimit:" + reportLimit + " hitRangesMask:"
+                + " histShift/s:" + histShift + "/" + histShifts + " processLimit:" + processLimit + " hitRangesMask:"
                 + Arrays.toString(hitRangesMask) + " threads:" + workingThreads + "   "
                 + LocalTime.now().toString().substring(0, 8) + "  ";
     }
