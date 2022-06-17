@@ -7,7 +7,6 @@ import java.util.Set;
 import fun.kolowert.almond.common.HistHandler;
 import fun.kolowert.almond.data.ParamSet;
 import fun.kolowert.almond.data.ResultSet;
-import fun.kolowert.almond.serv.Serv;
 import lombok.NonNull;
 
 public class BasePlayer {
@@ -82,69 +81,6 @@ public class BasePlayer {
 
         paramSet.setId(baseNextLineId);
         return new ResultSet(baseNextLineId, frequenciesTab, histOrderResultTab, paramSet.hitRangesMask);
-    }
-
-    public void displayResultSet(ParamSet paramSet, ResultSet resultSet) {
-        displayFrequenciesTab(paramSet, resultSet);
-        displayHistOrderResultTab(paramSet, resultSet);
-        displayOnRangesReport(paramSet, resultSet);
-    }
-
-    public void displayFrequenciesTab(ParamSet paramSet, ResultSet resultSet) {
-        List<double[]> frequenciesTab = resultSet.getFrequenciesTab();
-        StringBuilder result = new StringBuilder();
-        for (double[] frequencies : frequenciesTab) {
-            StringBuilder sb = new StringBuilder(6 * frequencies.length);
-            for (int i = frequencies.length - 1; i >= 0; i--) {
-                int order = (int) frequencies[i];
-                int preball = (int) (100 * (frequencies[i] - order) + 0.005);
-                String ball = Serv.normIntX(preball, 2, "0");
-                sb.append(Serv.normIntX(order, 5, " ")).append("(").append(ball).append(")").append(" ");
-            }
-            result.append(sb).append(System.lineSeparator());
-        }
-        System.out.println("\nFrequencies Tab");
-        System.out.println(Assistant.displayPlainHead(paramSet.gameType, "", "      "));
-        System.out.println(result.substring(0, result.length() - 2));
-    }
-
-    private void displayHistOrderResultTab(ParamSet paramSet, ResultSet resultSet) {
-        System.out.println();
-        System.out.println("histOrderResultTab");
-        System.out.println(Assistant.displayPlainHead(paramSet.gameType, paramSet.displayPrefix));
-        List<int[]> histOrderResultTab = resultSet.getHistOrderResultTab();
-        int counter = histOrderResultTab.size() - 1;
-        for (int[] hits : histOrderResultTab) {
-            System.out.println(Serv.displayIntArray(hits, paramSet.hitRangesMask,
-                    Serv.normIntX(resultSet.getId() - counter--, 5, "0") + " |"));
-        }
-        int[] histOrderResultTabSum = new int[histOrderResultTab.get(0).length];
-        for (int[] hits : histOrderResultTab) {
-            for (int i = 0; i < hits.length; i++) {
-                histOrderResultTabSum[i] += hits[i];
-            }
-        }
-        System.out.println("\nSum of histOrderResultTab");
-        System.out.println(Assistant.displayPlainHead(paramSet.gameType, paramSet.displayPrefix));
-        System.out.println(Serv.displayIntArray(histOrderResultTabSum, paramSet.hitRangesMask, paramSet.displayPrefix));
-    }
-
-    private void displayOnRangesReport(ParamSet paramSet, ResultSet resultSet) {
-        displayHitsOnRanges(resultSet);
-        System.out.println("\nzeroesOnHitsOnRanges: " + resultSet.getZeroesOnHitsOnRanges()
-                + " / " + resultSet.getHitsOnRanges().size()
-                + " >> zero coefficient: # " + Serv.normDoubleX(resultSet.getZeroCoefficient(), 2)
-                + " # >>" + " on params: " + paramSet);
-        System.out.println("WholeLinesOnHitsOnRanges: " + resultSet.getWholeLinesOnHitsOnRanges()
-                + "  wholeLinesCoefficient: " + Serv.normDoubleX(resultSet.getWholeLinesCoefficient(), 2));
-    }
-
-    private void displayHitsOnRanges(ResultSet resultSet) {
-        System.out.println("\nHits On Ranges");
-        Assistant.displayRangesHead(resultSet.getHitRangesMask());
-        Assistant.displayTab(resultSet.getHitsOnRanges());
-        System.out.println("Sum");
-        Assistant.displayHitsOnRangesResume(resultSet);
     }
 
     private int countWorkingThreads(String namePrefix) {

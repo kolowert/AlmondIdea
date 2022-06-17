@@ -10,19 +10,19 @@ import fun.kolowert.almond.type.SortType;
 
 public class Alpha {
 
-    private static final GameType GAME_TYPE = GameType.KENO;
+    private static final GameType GAME_TYPE = GameType.MAXI;
     private static final SortType SORT_TYPE = SortType.ASCENDING;
-    private static final int PLAY_SET = 3;
-    private static final int HIST_DEEP = 12;
-    private static final int HIST_SHIFT = 10;
-    private static final int HIST_SHIFTS = 8;
+    private static final int PLAY_SET = 5;
+    private static final int HIST_DEEP = 36;
+    private static final int HIST_SHIFT = 0;
+    private static final int HIST_SHIFTS = 4;
     private static final int REPORT_LIMIT = 12_000;
 
     private static final int WORKING_THREADS_AMOUNT = 4;
 
     private static final String DISPLAY_PREFIX_STUB = "----- |";
 
-    private static final int[] HIT_RANGE_MASK = { 5, 10, 15, 20, 25, 30, 35 };
+    private static final int[] HIT_RANGE_MASK =  { 9, 18, 27, 36, 45 }; // { 5, 10, 15, 20, 25, 30, 35, 40 };
 
     public static void main(String[] args) {
         System.out
@@ -32,6 +32,7 @@ public class Alpha {
         // Multiply playing
         ParamSet paramSet = new ParamSet(GAME_TYPE, SORT_TYPE, PLAY_SET, HIST_DEEP, HIST_SHIFT, HIST_SHIFTS,
                 REPORT_LIMIT, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
+
         multi(true, paramSet);
 
         overMulti(false);
@@ -46,7 +47,7 @@ public class Alpha {
         System.out.println("## OVER MULTI ");
         System.out.println(Combinator.reportCombinationsQuantity(PLAY_SET, GAME_TYPE.getGameSetSize()));
         int[] histDeeps = new int[] { 8, 12, 18, 24, 36, 48, 60 };
-        int[] reportLimits = new int[] { 3_000, 6_000, 9_000, 12_000, 16_000 };
+        int[] reportLimits = new int[] { 1_000, 3_000, 6_000, 9_000, 12_000, 16_000 };
         for (int histDeep : histDeeps) {
             for (int reportLimit : reportLimits) {
                 ParamSet paramSet = new ParamSet(GAME_TYPE, SORT_TYPE, PLAY_SET, histDeep, HIST_SHIFT, HIST_SHIFTS,
@@ -64,7 +65,7 @@ public class Alpha {
         System.out.println(Combinator.reportCombinationsQuantity(PLAY_SET, GAME_TYPE.getGameSetSize()));
 
         ResultSet resultSet = basePlayer.playMulti(paramSet, true);
-        basePlayer.displayResultSet(paramSet, resultSet);
+        Display.displayResultSet(paramSet, resultSet);
         System.out.println("\n" + resultSet.reportCoefficients() + " onParams: " + paramSet);
     }
 }
