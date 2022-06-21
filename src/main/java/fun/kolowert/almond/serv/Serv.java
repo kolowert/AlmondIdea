@@ -1,5 +1,7 @@
 package fun.kolowert.almond.serv;
 
+import java.text.DecimalFormat;
+
 public class Serv {
     private Serv() {
     }
@@ -40,14 +42,37 @@ public class Serv {
     }
 
     public static String normDoubleX(double d, int x) {
+        // Tip is for rounding
+        double tip = 0.5;
+        for (int j = 1; j <= x; j++) {
+            tip = tip * 0.1;
+        }
         int n = (int) d;
-        String sFraction = String.valueOf(d - n) + "0000000000000";
+        String sFraction = String.valueOf(d - n + tip) + "0000000000000";
         return String.valueOf(n) + sFraction.substring(1, 2 + x);
     }
 
+    /**
+     * @param d - double input
+     * @param i - a size of whole fraction of input
+     * @param x - a size of fractional part of input
+     * @return string like '02.357' when argument is 2.3568970025
+     */
+    public static String normDoubleX(double d, int i, int x) {
+        // Tip is for rounding
+        double tip = 0.5;
+        for (int j = 1; j <= x; j++) {
+            tip = tip * 0.1;
+        }
+        int n = (int) d;
+        String sFraction = String.valueOf(d - n + tip) + "0000000000000";
+        return normIntX(n, i, "0") + sFraction.substring(1, 2 + x);
+    }
+
+    // debugging
     public static void main(String[] args) {
-        for (double y = 3.1415; y < 1_000_000; y *= 10.0) {
-            System.out.println(normDoubleX(y, 2));
+        for (double y = 3.1415; y < 100_000_000; y *= 7.37) {
+            System.out.println(y + " >> " + normDoubleX(y, 4, 3));
         }
     }
 

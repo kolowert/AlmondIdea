@@ -1,5 +1,6 @@
 package fun.kolowert.almond.data;
 
+import fun.kolowert.almond.alpha.Display;
 import fun.kolowert.almond.serv.Count;
 import fun.kolowert.almond.serv.Serv;
 import lombok.Getter;
@@ -58,14 +59,15 @@ public class ResultSet {
     }
 
     public static String csvCoefficientsHead() {
-        return "id,zeroCoeff,wholeLineCoeff,wholelines,lines,deviation%";
+        return "id,zeroCoeff,wholeLineCoeff,wholelines,lines,deviation%, avgHits";
     }
 
     public String csvCoefficients() {
         return "" + id + ", " + Serv.normDoubleX(zeroCoefficient, 2)
                 + ", " + Serv.normDoubleX(wholeLinesCoefficient, 2)
                 + ", " + wholeLinesOnHitsOnRanges + "," + hitsOnRanges.size()
-                + ", " + Serv.normDoubleX(Count.countStandardDeviationPercent(avgHitsOnRanges), 1);
+                + ", " + Serv.normDoubleX(Count.countStandardDeviationPercent(avgHitsOnRanges), 2, 1)
+                + ", " + Display.reportDoubleArray(avgHitsOnRanges);
     }
 
     public String reportCoefficients() {

@@ -40,6 +40,7 @@ public class FileHand {
             Files.write(Paths.get(path), toStore);
         } catch (IOException e) {
             System.out.println("incorrect path");
+            e.printStackTrace();
         }
     }
 
@@ -50,6 +51,7 @@ public class FileHand {
             Files.write(Paths.get(path), toStore);
         } catch (IOException e) {
             System.out.println("incorrect path");
+            e.printStackTrace();
         }
     }
 
@@ -67,6 +69,7 @@ public class FileHand {
             Files.write(Paths.get(path), result);
         } catch (IOException e) {
             System.out.println("incorrect path");
+            e.printStackTrace();
         }
     }
 
@@ -87,6 +90,7 @@ public class FileHand {
             System.out.println("written to " + path);
         } catch (IOException e) {
             System.out.println("incorrect path");
+            e.printStackTrace();
         }
     }
 
