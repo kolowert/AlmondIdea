@@ -4,6 +4,7 @@ import fun.kolowert.almond.data.ParamSet;
 import fun.kolowert.almond.data.ResultSet;
 import fun.kolowert.almond.serv.FileHand;
 import fun.kolowert.almond.serv.Timer;
+import fun.kolowert.almond.type.SortType;
 
 public class Writer {
 
@@ -16,13 +17,23 @@ public class Writer {
     }
 
     public void write() {
-        // TODO do make better file name
-        double t = .000_000_001 * System.currentTimeMillis();
-        String timeMark = "_" + (int) (1_000_000 * (t - (int) t));
-        String path = "src/main/resources/result/" + paramSet.getGameType().name() + timeMark + ".txt";
+        String path = preparePath();
         FileHand fileHand = new FileHand(path);
         String info = prepareInfo();
         fileHand.write(info);
+    }
+
+    private String preparePath() {
+        double t = .000_000_01 * System.currentTimeMillis();
+        String timeMark = "_" + (int) (10_000 * (t - (int) t));
+        String folder = "src/main/resources/result/";
+        String sortMark = paramSet.sortType == SortType.ASCENDING ? "-A-" : "-D-";
+        String name = paramSet.getGameType().name();
+        return folder + name + sortMark + paramSet.getId()
+                + "_" + paramSet.playSet + "-" + paramSet.histDeep
+                + "_" + paramSet.histShift + "-" + paramSet.histShifts
+                + "-" + (int) (0.001 * paramSet.processLimit)
+                + timeMark + ".txt";
     }
 
     private String prepareInfo() {

@@ -1,6 +1,6 @@
 package fun.kolowert.almond.data;
 
-import fun.kolowert.almond.alpha.Display;
+import fun.kolowert.almond.alpha.Preparatory;
 import fun.kolowert.almond.serv.Count;
 import fun.kolowert.almond.serv.Serv;
 import lombok.Getter;
@@ -67,7 +67,7 @@ public class ResultSet {
                 + ", " + Serv.normDoubleX(wholeLinesCoefficient, 2)
                 + ", " + wholeLinesOnHitsOnRanges + "," + hitsOnRanges.size()
                 + ", " + Serv.normDoubleX(Count.countStandardDeviationPercent(avgHitsOnRanges), 2, 1)
-                + ", " + Display.reportDoubleArray(avgHitsOnRanges);
+                + ", " + Preparatory.reportDoubleArray(avgHitsOnRanges);
     }
 
     public String reportCoefficients() {

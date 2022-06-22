@@ -1,6 +1,6 @@
 package fun.kolowert.almond.data;
 
-import fun.kolowert.almond.alpha.Display;
+import fun.kolowert.almond.alpha.Preparatory;
 import fun.kolowert.almond.type.GameType;
 import fun.kolowert.almond.type.SortType;
 import lombok.Data;
@@ -31,7 +31,7 @@ public class ParamSet {
 
     public String csvStamp() {
         return "" + id + ", " + gameType + ", " +  sortType + ", " + playSet + ", " + histDeep + ", " + histShift + ", "
-                + histShifts + ", " + processLimit + ", " + workingThreads + ", " + Display.reportIntArray(hitRangesMask);
+                + histShifts + ", " + processLimit + ", " + workingThreads + ", " + Preparatory.reportIntArray(hitRangesMask);
     }
 
     @Override

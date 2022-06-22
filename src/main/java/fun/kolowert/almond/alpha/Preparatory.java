@@ -15,6 +15,26 @@ public class Preparatory {
 
     private Preparatory() {}
 
+    public static String reportIntArray(int[] input) {
+        StringBuilder sb = new StringBuilder(2 + 3 * input.length);
+        sb.append("[");
+        for (int d : input) {
+            sb.append(Serv.normIntX(d, 2, " "));
+            sb.append(" ");
+        }
+        return sb.substring(0, sb.length() - 1) + "]";
+    }
+
+    public static String reportDoubleArray(double[] input) {
+        StringBuilder sb = new StringBuilder(2 + 6 * input.length);
+        sb.append("[");
+        for (double d : input) {
+            sb.append(Serv.normDoubleX(d, 1, 2));
+            sb.append(" ");
+        }
+        return sb.substring(0, sb.length() - 1) + "]";
+    }
+
     protected static String prepareFrequenciesTab(ParamSet paramSet, ResultSet resultSet) {
         StringBuilder sb = new StringBuilder();
         sb.append("\nFrequencies Tab").append(System.lineSeparator());
@@ -32,7 +52,7 @@ public class Preparatory {
             result.append(line).append(System.lineSeparator());
         }
 
-        sb.append(Display.reportPlainHead(paramSet.gameType, "", "      "));
+        sb.append(reportPlainHead(paramSet.gameType, "", "      "));
         sb.append(System.lineSeparator());
         sb.append(result.substring(0, result.length() - 2));
 
@@ -126,7 +146,7 @@ public class Preparatory {
             }
         }
         sb.append("\nSum of histOrderResultTab").append(System.lineSeparator());
-        sb.append(Display.reportPlainHead(paramSet.gameType, paramSet.displayPrefix));
+        sb.append(reportPlainHead(paramSet.gameType, paramSet.displayPrefix));
         sb.append(System.lineSeparator());
         sb.append(reportIntArray(histOrderResultTabSum, paramSet.hitRangesMask, paramSet.displayPrefix));
         sb.append(System.lineSeparator());
@@ -138,6 +158,14 @@ public class Preparatory {
         StringBuilder sb = new StringBuilder(prefix);
         for (int i = 1; i <= gameType.getGameSetSize(); i++) {
             sb.append(Serv.normIntX(i, 2, "0")).append("|");
+        }
+        return sb.toString();
+    }
+
+    private static String reportPlainHead(GameType gameType, String prefix, String indent) {
+        StringBuilder sb = new StringBuilder(prefix);
+        for (int i = 1; i <= gameType.getGameSetSize(); i++) {
+            sb.append(indent).append(Serv.normIntX(i, 2, " ")).append(" |");
         }
         return sb.toString();
     }

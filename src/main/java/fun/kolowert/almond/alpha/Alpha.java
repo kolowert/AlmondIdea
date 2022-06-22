@@ -3,6 +3,8 @@ package fun.kolowert.almond.alpha;
 import fun.kolowert.almond.common.Combinator;
 import fun.kolowert.almond.data.ParamSet;
 import fun.kolowert.almond.data.ResultSet;
+import fun.kolowert.almond.serv.FileHand;
+import fun.kolowert.almond.serv.Serv;
 import fun.kolowert.almond.serv.Sounder;
 import fun.kolowert.almond.serv.Timer;
 import fun.kolowert.almond.type.GameType;
@@ -14,11 +16,11 @@ public class Alpha {
 
     private static final GameType GAME_TYPE = GameType.KENO;
     private static final SortType SORT_TYPE = SortType.ASCENDING;
-    private static final int PLAY_SET = 3;
+    private static final int PLAY_SET = 5;
     private static final int HIST_DEEP = 8;
-    private static final int HIST_SHIFT = 1;
-    private static final int HIST_SHIFTS = 3;
-    private static final int PROCESS_LIMIT = 2_000;
+    private static final int HIST_SHIFT = 31;
+    private static final int HIST_SHIFTS = 30;
+    private static final int PROCESS_LIMIT = 3_000;
 
     private static final int WORKING_THREADS_AMOUNT = 3;
 
@@ -36,35 +38,43 @@ public class Alpha {
         ParamSet paramSet = new ParamSet(GAME_TYPE, SORT_TYPE, PLAY_SET, HIST_DEEP, HIST_SHIFT, HIST_SHIFTS,
                 PROCESS_LIMIT, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
 
-        multi(true, paramSet, true);
+        multi(paramSet, false, true);
 
-        overMulti(false);
+        overMulti(true, true);
 
         System.out.print("\n\nalpha finished ~ " + timer.reportExtended());
         Sounder.beep();
     }
 
-    private static void overMulti(boolean doit) {
+    private static void overMulti(boolean doit, boolean letWriteResult) {
         if (!doit) { return; }
         BasePlayer basePlayer = new BasePlayer();
         System.out.println("## OVER MULTI ");
         System.out.println(Combinator.reportCombinationsQuantity(PLAY_SET, GAME_TYPE.getGameSetSize()));
-        int[] histDeeps = new int[] { 8, 10, 12, 16, 20 };
-        int[] processLimitsKilo = new int[] { 1 };
-        System.out.print("\nCoefficients");
-        System.out.print("\n" + ResultSet.csvCoefficientsHead() + ", |, " + ParamSet.csvHead());
+        int[] histDeeps = new int[] { 8, 10 };
+        int[] processLimitsKilo = new int[] { 1, 3, 6, 12, 16, 24 };
+        StringBuilder resume = new StringBuilder("\nCoefficients --- over multi resume --- " + Timer.dateTimeNow());
+        resume.append("\n" + ResultSet.csvCoefficientsHead() + ", |, " + ParamSet.csvHead());
         for (int histDeep : histDeeps) {
             for (int processLimitKilo : processLimitsKilo) {
                 ParamSet paramSet = new ParamSet(GAME_TYPE, SORT_TYPE, PLAY_SET, histDeep, HIST_SHIFT, HIST_SHIFTS,
                         1000 * processLimitKilo, WORKING_THREADS_AMOUNT, DISPLAY_PREFIX_STUB, HIT_RANGE_MASK);
+
                 ResultSet resultSet = basePlayer.playMulti(paramSet, false);
-                System.out.print("\n" + resultSet.csvCoefficients() + ", |, " + paramSet.csvStamp()
-                        + "  >>" + LocalTime.now().toString().substring(0, 8));
+
+                if (letWriteResult) { new Writer(paramSet, resultSet).write(); }
+
+                String overMultiResume = "\n" + resultSet.csvCoefficients() + ", |, " + paramSet.csvStamp()
+                        + "  >>" + LocalTime.now().toString().substring(0, 8);
+
+                resume.append(overMultiResume);
+                System.out.print(overMultiResume);
             }
         }
+        writeToFile(resume.toString());
     }
 
-    private static void multi(boolean doit, ParamSet paramSet, boolean writeResult) {
+    private static void multi(ParamSet paramSet, boolean doit, boolean letWriteResult) {
         if (!doit) { return; }
         BasePlayer basePlayer = new BasePlayer();
         System.out.println("# MULTI " + paramSet);
@@ -72,8 +82,16 @@ public class Alpha {
 
         ResultSet resultSet = basePlayer.playMulti(paramSet, true);
 
-        if (writeResult) { new Writer(paramSet, resultSet).write(); }
+        if (letWriteResult) { new Writer(paramSet, resultSet).write(); }
 
         Display.displayResultSet(paramSet, resultSet);
+    }
+
+    private static void writeToFile(String input) {
+        double t = .000_000_01 * System.currentTimeMillis();
+        String timeMark = "_" + (int) (10_000 * (t - (int) t));
+        String path = "src/main/resources/result/" + GAME_TYPE.name() + PLAY_SET + "-resume" + timeMark + ".txt";
+        FileHand fileHand = new FileHand(path);
+        fileHand.write(input);
     }
 }
